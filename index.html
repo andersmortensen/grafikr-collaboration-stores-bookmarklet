@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grafikr Collaboration Stores – bookmarklet</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='5'%20fill='%230f0f0f'/%3E%3Cg%20transform='translate(2,8.1)%20scale(0.875)'%3E%3Cpath%20fill='%23ffffff'%20d='M15.75,0%20C7.06,0%200,4.03%200,9%20C0,13.97%207.06,18%2015.75,18%20C24.44,18%2031.5,13.97%2031.5,9%20C31.5,4.03%2024.43,0%2015.75,0%20Z%20M30.39,8.49%20L24.14,8.49%20C24.14,8.36%2024.11,8.23%2024.09,8.11%20L26.27,8.11%20C26.14,7.11%2025.24,6.29%2023.54,5.72%20C22.88,3.94%2021.73,2.43%2020.23,1.41%20C25.84,2.39%2029.97,5.17%2030.37,8.49%20L30.39,8.49%20Z%20M21.89,10.07%20C21.79,10.68%2020.11,11.57%2015.93,11.57%20C10.32,11.57%209.53,10.04%209.53,9.05%20C9.53,8.06%2010.3,6.58%2015.93,6.58%20C20.5,6.58%2021.65,7.5%2021.89,8.11%20L23.06,8.11%20C23.08,8.31%2023.09,8.51%2023.1,8.72%20L15.61,8.72%20L15.61,10.08%20L21.89,10.08%20L21.89,10.07%20Z%20M22.3,5.38%20C20.68,5.02%2018.57,4.83%2015.92,4.83%20C13.13,4.83%2010.85,5.08%209.11,5.55%20C10.3,2.89%2012.82,1.04%2015.73,1.04%20C18.64,1.04%2021.06,2.81%2022.29,5.4%20L22.3,5.38%20Z%20M11.24,1.41%20C9.68,2.47%208.48,4.07%207.85,5.96%20C6.35,6.57%205.47,7.42%205.26,8.49%20L1.1,8.49%20C1.49,5.17%205.62,2.4%2011.24,1.41%20Z%20M1.1,9.51%20L5.25,9.51%20C5.46,10.6%206.37,11.47%207.86,12.09%20C8.5,13.96%209.69,15.53%2011.24,16.59%20C5.63,15.61%201.5,12.83%201.1,9.51%20Z%20M9.15,12.51%20C10.75,12.94%2012.8,13.17%2015.21,13.17%20C18.58,13.17%2021,12.67%2022.59,11.92%20C21.51,14.87%2018.85,16.97%2015.75,16.97%20C12.86,16.97%2010.35,15.15%209.15,12.51%20L9.15,12.51%20Z%20M20.25,16.59%20C21.52,15.73%2022.55,14.5%2023.23,13.06%20L26.28,13.06%20L26.28,9.51%20L30.38,9.51%20C29.99,12.83%2025.86,15.6%2020.24,16.59%20L20.25,16.59%20Z'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #000000;
+    --panel: #0f0f0f;
+    --surface: #1c1c1c;
+    --text: #ffffff;
+    --muted: #c2c2c2;
+    --muted2: #7a7a7a;
+    --border: rgba(255, 255, 255, 0.12);
+    --btn: #333333;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--muted);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 64px 24px;
+  }
+  main { max-width: 560px; margin: 0 auto; }
+  .wordmark { display: block; width: 168px; height: auto; margin-bottom: 32px; }
+  h1 {
+    font-size: 34px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  .sub { color: var(--muted); font-size: 15px; margin-bottom: 44px; }
+  section { margin-bottom: 44px; }
+  h2 {
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted2);
+    margin-bottom: 14px;
+  }
+  p { font-size: 15px; margin-bottom: 10px; }
+  strong { color: var(--text); font-weight: 500; }
+  .drag-zone {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--panel);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .bookmarklet {
+    display: inline-block;
+    background: var(--btn);
+    color: var(--text);
+    font-weight: 400;
+    font-size: 15px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .drag-zone span { color: var(--muted2); font-size: 14px; }
+  .rename-note { font-size: 13px; color: var(--muted2); margin-top: 10px; }
+  .illu {
+    position: relative;
+    margin-top: 16px;
+    background: var(--panel);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    padding: 24px;
+    overflow: hidden;
+  }
+  .browser {
+    position: relative;
+    width: 464px;
+    max-width: 100%;
+    height: 230px;
+    margin: 0 auto;
+    background: #161616;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .tbar {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #2c2c2c; }
+  .url { width: 180px; height: 14px; border-radius: 7px; background: #222222; margin: 0 auto; }
+  .fbar {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    background: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .stub { height: 8px; border-radius: 4px; background: #2e2e2e; }
+  .slot {
+    position: absolute;
+    left: 172px;
+    top: 37px;
+    width: 2px;
+    height: 14px;
+    background: var(--muted);
+    opacity: 0;
+    animation: kSlot 7s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
+  }
+  .newbm {
+    position: absolute;
+    left: 180px;
+    top: 36px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10.5px;
+    color: var(--muted);
+    white-space: nowrap;
+    opacity: 0;
+    transform-origin: left center;
+    animation: kNew 7s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
+  }
+  .newbm svg { width: 15px; height: 9px; fill: #c2c2c2; flex: none; }
+  .pagebtn, .ghost {
+    position: absolute;
+    left: 133px;
+    top: 140px;
+    background: var(--btn);
+    color: var(--text);
+    font-size: 13px;
+    padding: 9px 16px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .pagebtn { animation: kBtn 7s cubic-bezier(0.45, 0.05, 0.35, 1) infinite; }
+  .ghost {
+    opacity: 0;
+    transform-origin: left top;
+    pointer-events: none;
+    animation: kGhost 7s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
+  }
+  .cursor {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 13px;
+    opacity: 0;
+    pointer-events: none;
+    animation: kCursor 7s cubic-bezier(0.45, 0.05, 0.35, 1) infinite;
+  }
+  .cursor svg { width: 13px; height: 19px; display: block; }
+  @keyframes kCursor {
+    0% { transform: translate(380px, 205px); opacity: 0; }
+    6% { opacity: 1; }
+    16% { transform: translate(238px, 158px); opacity: 1; }
+    20% { transform: translate(238px, 160px); }
+    36% { transform: translate(262px, 95px); }
+    52% { transform: translate(282px, 46px); }
+    58% { transform: translate(282px, 46px); opacity: 1; }
+    72% { transform: translate(395px, 125px); opacity: 0; }
+    100% { transform: translate(395px, 125px); opacity: 0; }
+  }
+  @keyframes kGhost {
+    0%, 18% { transform: translate(0, 0); opacity: 0; }
+    20% { transform: translate(0, 2px) scale(0.98); opacity: 0.92; }
+    36% { transform: translate(26px, -58px) scale(0.85); opacity: 0.92; }
+    52% { transform: translate(47px, -103px) scale(0.62); opacity: 0.9; }
+    55% { transform: translate(47px, -105px) scale(0.55); opacity: 0; }
+    100% { opacity: 0; }
+  }
+  @keyframes kBtn {
+    0%, 16% { transform: scale(1); }
+    19% { transform: scale(0.96); }
+    24% { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+  @keyframes kNew {
+    0%, 52% { opacity: 0; transform: scale(0.8); }
+    58% { opacity: 1; transform: scale(1.06); }
+    63% { transform: scale(1); }
+    92% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  @keyframes kSlot {
+    0%, 26% { opacity: 0; }
+    34%, 50% { opacity: 1; }
+    55%, 100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor, .ghost, .slot { display: none; }
+    .pagebtn, .newbm { animation: none; }
+    .newbm { opacity: 1; transform: none; }
+  }
+  .modes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .mode {
+    background: var(--panel);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 4px;
+    padding: 18px;
+  }
+  .mode-tag {
+    display: block;
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 11px;
+    color: var(--muted2);
+    margin-bottom: 10px;
+  }
+  .mode strong { display: block; color: var(--text); font-weight: 500; font-size: 15px; margin-bottom: 6px; }
+  .mode p { font-size: 14px; margin: 0; }
+  .keys {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 14px;
+    font-size: 13px;
+    display: grid;
+    gap: 6px;
+  }
+  .key-sub { color: var(--muted2); }
+  @media (max-width: 540px) {
+    .modes { grid-template-columns: 1fr; }
+  }
+  kbd {
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+  ol { padding-left: 20px; font-size: 15px; }
+  ol li { margin-bottom: 8px; }
+  code.inline {
+    font-family: ui-monospace, "SF Mono", monospace;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 4px;
+    word-break: break-all;
+  }
+  em { color: var(--text); }
+  .note {
+    font-size: 13px;
+    color: var(--muted2);
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <svg class="wordmark" viewBox="0 0 242.2 30.5" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grafikr">
+    <path fill="#FFFFFF" d="M75,11.5C75,4.8,70.9,1,63.9,1H40.8v29h8.4v-8H60l5.2,8.1H75l-6.2-9C72.7,19.6,75,16,75,11.5z M61,15.1H49.2V7.9H61c2.6,0,5.3,0,5.3,3.6S63.5,15.1,61,15.1z"/>
+    <path fill="#FFFFFF" d="M91.9,1l-15,29H86l2.8-5.5h17.9l2.8,5.5h9L103.5,1H91.9z M92,18.3l5.7-11.4l5.7,11.4H92z"/>
+    <polygon fill="#FFFFFF" points="121,30.1 129.4,30.1 129.4,21.5 148.7,21.5 148.7,14.4 129.4,14.4 129.4,8.2 151.1,8.2 151.1,1 121,1"/>
+    <rect x="154.7" y="1" fill="#FFFFFF" width="8.4" height="29"/>
+    <polygon fill="#FFFFFF" points="194.5,1 184.3,12 175.9,12 175.9,1 167.5,1 167.5,30.1 175.9,30.1 175.9,19.1 184.3,19.1 194.5,30.1 204.8,30.1 191.7,15.6 204.8,1"/>
+    <path fill="#FFFFFF" d="M242.2,11.5C242.2,4.8,238.1,1,231,1h-23.1v29h8.4v-8h10.8l5.2,8.1h9.7l-6.2-9C239.9,19.6,242.2,16,242.2,11.5z M228.1,15.1h-11.8V7.9h11.8c2.6,0,5.3,0,5.3,3.6S230.7,15.1,228.1,15.1z"/>
+    <path fill="#FFFFFF" d="M17.6,19.6h10.5c-0.6,1.8-3.4,4.1-9.3,4.1c-6.7,0-10.2-2.8-10.2-8.2S12,7.3,18.7,7.3c5.7,0,8,1.8,9,3.4h9C35.6,3.8,29.3,0,18.7,0C6.7,0,0,5.4,0,15.2c0,9.5,6.6,15.2,17.5,15.2c5.2,0,9.5-1.4,12.5-4.1l0.3,3.7h6.6V13.6H17.6V19.6z"/>
+  </svg>
+
+  <h1>Collaboration Stores Bookmarklet</h1>
+
+  <section>
+    <h2>Prøv den</h2>
+    <div class="drag-zone">
+      <a class="bookmarklet" id="demo" href="javascript:(function(){var ID='collab-sog';var old=document.getElementById(ID);if(old){old.remove();return}var DASH='https://dev.shopify.com/dashboard/129422981/stores?store_type=collaborations';var css='.bd{position:fixed;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:flex;align-items:flex-start;justify-content:center;padding-top:16vh;opacity:0;transition:opacity .18s ease}.bd.on{opacity:1}.card{width:min(540px,calc(100vw - 48px));background:rgb(15,15,15);border:1px solid rgba(255,255,255,.1);border-radius:4px;box-shadow:0 32px 90px rgba(0,0,0,.55),0 2px 10px rgba(0,0,0,.3);transform:translateY(10px) scale(.985);transition:transform .18s ease;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;overflow:hidden}.bd.on .card{transform:none}.row{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.08)}.ic{flex:none;width:24px;height:14px;fill:rgb(194,194,194)}.in{flex:1;border:0;outline:0;background:transparent;font:inherit;font-size:17px;font-weight:400;color:rgb(255,255,255)}.in::placeholder{color:rgba(255,255,255,.35)}.foot{display:flex;align-items:center;gap:12px;padding:11px 18px}.seg{display:flex;background:rgba(255,255,255,.07);border-radius:4px;padding:2px;flex:none}.seg button{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;font-size:12.5px;font-weight:400;padding:5px 11px;border-radius:3px;color:rgb(194,194,194);cursor:pointer}.seg button.on{background:rgb(51,51,51);color:rgb(255,255,255)}.prev{flex:1;text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:rgb(122,122,122);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}';var host=document.createElement('div');host.id=ID;host.style.cssText='position:fixed;inset:0;z-index:2147483647';var sh=host.attachShadow({mode:'open'});try{var ss=new CSSStyleSheet();ss.replaceSync(css);sh.adoptedStyleSheets=[ss]}catch(e){var st=document.createElement('style');st.textContent=css;sh.appendChild(st)}var bd=document.createElement('div');bd.className='bd';var card=document.createElement('div');card.className='card';var row=document.createElement('div');row.className='row';var ns='http://www.w3.org/2000/svg';var sv=document.createElementNS(ns,'svg');sv.setAttribute('viewBox','0 0 32 18');sv.setAttribute('class','ic');var pa=document.createElementNS(ns,'path');pa.setAttribute('d','M15.75,0 C7.06,0 0,4.03 0,9 C0,13.97 7.06,18 15.75,18 C24.44,18 31.5,13.97 31.5,9 C31.5,4.03 24.43,0 15.75,0 Z M30.39,8.49 L24.14,8.49 C24.14,8.36 24.11,8.23 24.09,8.11 L26.27,8.11 C26.14,7.11 25.24,6.29 23.54,5.72 C22.88,3.94 21.73,2.43 20.23,1.41 C25.84,2.39 29.97,5.17 30.37,8.49 L30.39,8.49 Z M21.89,10.07 C21.79,10.68 20.11,11.57 15.93,11.57 C10.32,11.57 9.53,10.04 9.53,9.05 C9.53,8.06 10.3,6.58 15.93,6.58 C20.5,6.58 21.65,7.5 21.89,8.11 L23.06,8.11 C23.08,8.31 23.09,8.51 23.1,8.72 L15.61,8.72 L15.61,10.08 L21.89,10.08 L21.89,10.07 Z M22.3,5.38 C20.68,5.02 18.57,4.83 15.92,4.83 C13.13,4.83 10.85,5.08 9.11,5.55 C10.3,2.89 12.82,1.04 15.73,1.04 C18.64,1.04 21.06,2.81 22.29,5.4 L22.3,5.38 Z M11.24,1.41 C9.68,2.47 8.48,4.07 7.85,5.96 C6.35,6.57 5.47,7.42 5.26,8.49 L1.1,8.49 C1.49,5.17 5.62,2.4 11.24,1.41 Z M1.1,9.51 L5.25,9.51 C5.46,10.6 6.37,11.47 7.86,12.09 C8.5,13.96 9.69,15.53 11.24,16.59 C5.63,15.61 1.5,12.83 1.1,9.51 Z M9.15,12.51 C10.75,12.94 12.8,13.17 15.21,13.17 C18.58,13.17 21,12.67 22.59,11.92 C21.51,14.87 18.85,16.97 15.75,16.97 C12.86,16.97 10.35,15.15 9.15,12.51 L9.15,12.51 Z M20.25,16.59 C21.52,15.73 22.55,14.5 23.23,13.06 L26.28,13.06 L26.28,9.51 L30.38,9.51 C29.99,12.83 25.86,15.6 20.24,16.59 L20.25,16.59 Z');sv.appendChild(pa);var inp=document.createElement('input');inp.className='in';inp.type='text';inp.setAttribute('autocomplete','off');inp.setAttribute('spellcheck','false');var foot=document.createElement('div');foot.className='foot';var seg=document.createElement('div');seg.className='seg';var b1=document.createElement('button');b1.type='button';b1.textContent='Dashboard-søgning';var b2=document.createElement('button');b2.type='button';b2.textContent='Direkte til admin';var prev=document.createElement('div');prev.className='prev';var mode='dash';try{if(localStorage.getItem('collabSogMode')==='admin')mode='admin'}catch(e){}function paint(){var q=inp.value.trim();if(mode==='admin'){b2.className='on';b1.className='';inp.placeholder='Store-handle, fx rains-global';prev.textContent='admin.shopify.com/store/'+(q?q:'…')}else{b1.className='on';b2.className='';inp.placeholder='Søg collaboration stores…';prev.textContent='dev.shopify.com · collaborations'+(q?' · '+q:'')}}function setMode(m){mode=m;try{localStorage.setItem('collabSogMode',m)}catch(e){}paint();inp.focus()}b1.onclick=function(){setMode('dash')};b2.onclick=function(){setMode('admin')};inp.oninput=paint;function onKey(e){if(e.key==='Escape'){e.stopPropagation();close()}}function close(){host.remove();document.removeEventListener('keydown',onKey,true)}function go(){var q=inp.value.trim();var u;if(mode==='admin'){if(!q)return;u='https://admin.shopify.com/store/'+encodeURIComponent(q)}else{u=DASH;if(q)u=u+'\u0026search_term='+encodeURIComponent(q)}close();var w=window.open(u,'_blank');if(!w)location.href=u}document.addEventListener('keydown',onKey,true);inp.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter')go();if(e.key==='Escape')close()});bd.addEventListener('mousedown',function(e){if(e.target===bd)close()});row.appendChild(sv);row.appendChild(inp);seg.appendChild(b1);seg.appendChild(b2);foot.appendChild(seg);foot.appendChild(prev);card.appendChild(row);card.appendChild(foot);bd.appendChild(card);sh.appendChild(bd);(document.body?document.body:document.documentElement).appendChild(host);paint();requestAnimationFrame(function(){bd.className='bd on';inp.focus()});setTimeout(function(){inp.focus()},80)})();">Grafikr Collaboration Stores</a>
+      <span>Klik på knappen for at prøve modalen her på siden. <kbd>Esc</kbd> lukker.</span>
+    </div>
+    <p class="rename-note">Når bogmærket er føjet til favoritlinjen, kan du frit omdøbe det til noget kortere – fx <em>Stores</em>. Navnet ændrer ikke funktionen.</p>
+  </section>
+
+  <section>
+  
+    <p>Træk knappen op i bogmærkelinjen – det er hele installationen.</p>
+    <div class="illu" aria-hidden="true">
+      <div class="browser">
+        <div class="tbar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url"></span></div>
+        <div class="fbar"><span class="stub" style="width:52px"></span><span class="stub" style="width:38px"></span><span class="stub" style="width:46px"></span></div>
+        <div class="slot"></div>
+        <div class="newbm"><svg viewBox="0 0 32 18"><path d="M15.75,0 C7.06,0 0,4.03 0,9 C0,13.97 7.06,18 15.75,18 C24.44,18 31.5,13.97 31.5,9 C31.5,4.03 24.43,0 15.75,0 Z M30.39,8.49 L24.14,8.49 C24.14,8.36 24.11,8.23 24.09,8.11 L26.27,8.11 C26.14,7.11 25.24,6.29 23.54,5.72 C22.88,3.94 21.73,2.43 20.23,1.41 C25.84,2.39 29.97,5.17 30.37,8.49 L30.39,8.49 Z M21.89,10.07 C21.79,10.68 20.11,11.57 15.93,11.57 C10.32,11.57 9.53,10.04 9.53,9.05 C9.53,8.06 10.3,6.58 15.93,6.58 C20.5,6.58 21.65,7.5 21.89,8.11 L23.06,8.11 C23.08,8.31 23.09,8.51 23.1,8.72 L15.61,8.72 L15.61,10.08 L21.89,10.08 L21.89,10.07 Z M22.3,5.38 C20.68,5.02 18.57,4.83 15.92,4.83 C13.13,4.83 10.85,5.08 9.11,5.55 C10.3,2.89 12.82,1.04 15.73,1.04 C18.64,1.04 21.06,2.81 22.29,5.4 L22.3,5.38 Z M11.24,1.41 C9.68,2.47 8.48,4.07 7.85,5.96 C6.35,6.57 5.47,7.42 5.26,8.49 L1.1,8.49 C1.49,5.17 5.62,2.4 11.24,1.41 Z M1.1,9.51 L5.25,9.51 C5.46,10.6 6.37,11.47 7.86,12.09 C8.5,13.96 9.69,15.53 11.24,16.59 C5.63,15.61 1.5,12.83 1.1,9.51 Z M9.15,12.51 C10.75,12.94 12.8,13.17 15.21,13.17 C18.58,13.17 21,12.67 22.59,11.92 C21.51,14.87 18.85,16.97 15.75,16.97 C12.86,16.97 10.35,15.15 9.15,12.51 L9.15,12.51 Z M20.25,16.59 C21.52,15.73 22.55,14.5 23.23,13.06 L26.28,13.06 L26.28,9.51 L30.38,9.51 C29.99,12.83 25.86,15.6 20.24,16.59 L20.25,16.59 Z"/></svg><span>Grafikr Collaboration Stores</span></div>
+        <div class="pagebtn">Grafikr Collaboration Stores</div>
+        <div class="ghost">Grafikr Collaboration Stores</div>
+        <div class="cursor"><svg viewBox="0 0 12 18"><path d="M1,1 L1,14.5 L4.2,11.8 L6.2,16.6 L8.4,15.6 L6.4,10.9 L10.6,10.9 Z" fill="#ffffff" stroke="#000000" stroke-width="0.8"/></svg></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Sådan virker den</h2>
+    <p>Klik på bogmærket → modal åbner med fokus i søgefeltet. Togglen i bunden vælger destination og huskes til næste gang.</p>
+    <div class="modes">
+      <div class="mode">
+        <span class="mode-tag">dev.shopify.com · collaborations</span>
+        <strong>Dashboard-søgning</strong>
+        <p>Åbner den filtrerede collaborations-liste via <code class="inline">?search_term=…</code>. Fuzzy, virker altid.</p>
+      </div>
+      <div class="mode">
+        <span class="mode-tag">admin.shopify.com/store/…</span>
+        <strong>Direkte til admin</strong>
+        <p>Behandler input som store-handle og åbner butikkens admin med det samme. Hurtigst når du kender navnet.</p>
+      </div>
+    </div>
+    <div class="keys">
+      <div><kbd>Enter</kbd> åbner i ny fane <span class="key-sub">– samme fane hvis popup blokeres</span></div>
+      <div><kbd>Esc</kbd> lukker <span class="key-sub">– klik udenfor eller på bogmærket igen gør det samme</span></div>
+    </div>
+  </section>
+
+  <p class="note">Begrænsninger: Virker ikke på Safaris startside eller tomme faner – der skal være en indlæst webside. Selve butikslisten kan ikke vises i modalen, da browseren blokerer dataopslag på tværs af domæner (CORS).</p>
+</main>
+</body>
+</html>
